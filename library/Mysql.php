@@ -1,4 +1,6 @@
-me: Mysql.php Description:	mysql数据库操作公共底层 Created by: liukang1 Project :
+<?php
+/*
+ * me: Mysql.php Description:	mysql数据库操作公共底层 Created by: liukang1 Project :
  * 微音乐资料库 Create Date: 2013-01-25 @author kunjuan <kunjuan@staff.sina.com.cn>
  */
 class Mysql {
