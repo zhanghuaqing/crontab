@@ -12,19 +12,19 @@ class Mysql {
 	static $instance = array ();
 	static $default_conf = array (
 			'master' => array (
-					'host' => 'localhost',
+					'host' => '127.0.0.1',
 					'port' => 3306,
 					'username' => 'root',
 					'password' => 'root',
-					'dbname' => 'musiclib',
+					'dbname' => 'crontab',
 					'charset' => "UTF8" 
 			),
 			'slave' => array (
-					'host' => 'localhost',
+					'host' => '127.0.0.1',
 					'port' => 3306,
 					'username' => 'root',
 					'password' => 'root',
-					'dbname' => 'musiclib',
+					'dbname' => 'crontab',
 					'charset' => "UTF8" 
 			) 
 	);
@@ -32,7 +32,7 @@ class Mysql {
 	/**
 	 * 构造函数
 	 */
-	function __construct($db_conf, $master_flag = false) {
+	function __construct($db_conf = '', $master_flag = false) {
 		if (empty ( $db_conf )) {
 			$this->db_conf = self::$default_conf;
 		} else {
@@ -156,22 +156,35 @@ class Mysql {
 	 * 开始一个事务
 	 */
 	public function beginTransaction() {
-		$connection = $this->mysqlConnect ( $this->db_conf, $this->master_flag );
-		$this->query ( "begin" );
+	   try {
+			$connection = $this->mysqlConnect($this->db_conf, true);
+			$ret = $this->db->beginTransaction();
+			return $ret;
+		} catch(Exception $e){
+			return false;
+		}
 	}
 	/**
 	 * 提交事务
 	 */
 	public function commit() {
-		$this->query ( 'commit' );
-		$this->query ( 'end' );
+	    try {
+	        $connection = $this->mysqlConnect($this->db_conf, true);
+	        return $this->db->commit();
+	    } catch(Exception $e){
+	        return false;
+	    }
 	}
 	/**
 	 * 事务回滚
 	 */
 	public function rollback() {
-		$this->query ( 'rollback' );
-		$this->query ( 'end' );
+	    try {
+	        $connection = $this->mysqlConnect($this->db_conf, true);
+	        return $this->db->rollBack();
+	    } catch(Exception $e){
+	        return false;
+	    }
 	}
 	/**
 	 * 返回pdo的错误信息
@@ -180,6 +193,21 @@ class Mysql {
 	 */
 	public function getError() {
 		return $this->db->errorInfo ();
+	}
+	/**
+	 * 设置强制读取主库
+	 *
+	 * @param $flag  true强度  false恢复正常
+	 *
+	 * @return
+	 *
+	 */
+	public function forceMaster($flag = true){
+	    self::$master_flag = $flag;
+	}
+	public function close(){
+	    $this->db = null;
+	    self::$instance= null;
 	}
 }
 

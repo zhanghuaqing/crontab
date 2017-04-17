@@ -13,6 +13,9 @@ class Mif_Registry{
     public static function set($name, $value){
         if (!empty($name)){
             self::$data [$name] = $value;
+            if ($name == 'log_path' && $value){
+                self::$data [$name] = rtrim($value, '/') . '/';
+            }
             return true;
         }
         return false;
