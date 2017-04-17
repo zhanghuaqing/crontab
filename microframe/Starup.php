@@ -13,6 +13,25 @@ class Mif_Starup{
             $this->_importConfig($config_file);
         }
     }
+    // 以命令行模式运行程序
+    public function execCli($funs, $argv)
+    {
+        //字符串预处理
+        $this->removeMagicQuotes();
+        $this->unregisterGlobals();
+        
+        //去掉执行脚本值
+        if ($argv){
+            array_shift($argv);
+        }
+        //使用回调函数处理
+        try {
+            call_user_func($funs, $argv); 
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        }
+        return true;
+    }
     // 运行程序
     public function run()
     {      
