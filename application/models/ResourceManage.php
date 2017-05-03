@@ -162,7 +162,10 @@ class ResourceManageModel {
         $jobserver_obj = SingletonManager::$SINGLETON_POOL->getInstance('JobServerManageModel');
         $stat_obj = SingletonManager::$SINGLETON_POOL->getInstance('StatModel');
         $inet_info = PublicModel::getServerEthInfo();
-        $mac = $inet_info ['mac'];
+        foreach ($inet_info as $info){
+            $mac = $info ['mac'];
+            break;
+        }
         $server_info = $jobserver_obj->getServerByMac($mac);
         if (empty($server_info)){
             echo "该服务器不在列表中\n";
