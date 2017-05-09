@@ -179,7 +179,7 @@ Vue.use(ElementUI);
 Vue.use(DataTables);
 
 const ERR_OK = 0;
-const ipOptions = ['123.126.53.49', '111.13.89.26', '221.179.175.156', '10.210.70.85','21.17.175.156','21.179.1.16'];
+const ipOptions = ['123.126.53.49', '111.13.89.26', '221.179.175.156', '10.210.70.85','21.17.175.155','21.179.1.16'];
 const weekDays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
 const ruleFormDefault = {
           id: '',
@@ -267,19 +267,13 @@ export default {
                       {
                         "mac": "78:2B:CB:71:ED:CC",
                         "id": "1",
-                        "ip": "10.210.70.85",
+                        "ip": "123.126.53.49",
                         "desc": "eth0\t10.210.70.85"
                       },
                       {
                         "mac": "78:2B:CB:71:ED:CC",
                         "id": "2",
-                        "ip": "10.210.72.84",
-                        "desc": "eth0\t10.210.70.85"
-                      },
-                      {
-                        "mac": "78:2B:CB:71:ED:CC",
-                        "id": "3",
-                        "ip": "10.210.73.86",
+                        "ip": "111.13.89.26",
                         "desc": "eth0\t10.210.70.85"
                       }
                     ],
@@ -312,19 +306,19 @@ export default {
                       {
                         "mac": "78:2B:CB:71:ED:CC",
                         "id": "1",
-                        "ip": "10.210.70.85",
+                        "ip": "221.179.175.156",
                         "desc": "eth0\t10.210.70.85"
                       },
                       {
                         "mac": "78:2B:CB:71:ED:CC",
                         "id": "2",
-                        "ip": "10.210.72.84",
+                        "ip": "111.13.89.26",
                         "desc": "eth0\t10.210.70.85"
                       },
                       {
                         "mac": "78:2B:CB:71:ED:CC",
                         "id": "3",
-                        "ip": "10.210.73.86",
+                        "ip": "21.179.1.16",
                         "desc": "eth0\t10.210.70.85"
                       }
                     ],
@@ -357,19 +351,19 @@ export default {
                       {
                         "mac": "78:2B:CB:71:ED:CC",
                         "id": "1",
-                        "ip": "10.210.70.85",
+                        "ip": "123.126.53.49",
                         "desc": "eth0\t10.210.70.85"
                       },
                       {
                         "mac": "78:2B:CB:71:ED:CC",
                         "id": "2",
-                        "ip": "10.210.72.84",
+                        "ip": "21.17.175.155",
                         "desc": "eth0\t10.210.70.85"
                       },
                       {
                         "mac": "78:2B:CB:71:ED:CC",
                         "id": "3",
-                        "ip": "10.210.73.86",
+                        "ip": "21.179.1.16",
                         "desc": "eth0\t10.210.70.85"
                       }
                     ],
@@ -394,10 +388,10 @@ export default {
                     "exec_status": "执行结束"
                   }
                 ];
-for(var i = 0;i< 100; i++){
-  this.tableData = this.tableData.concat(data);
-}
-//this.tableData = data;
+// for(var i = 0;i< 100; i++){
+//   this.tableData = this.tableData.concat(data);
+// }
+this.tableData = data;
 
 
     // this.$http.get('/api/').then((response) => {
@@ -467,6 +461,20 @@ for(var i = 0;i< 100; i++){
         ]
       }
     },
+    // ipChecked(ip,serverlist) {
+    //   if (serverlist){
+    //     let iparr = [];
+    //     for(let i in serverlist){
+    //       iparr.push(serverlist[i].ip);
+    //     }
+    //     if(iparr.indexOf(ip) > -1){
+    //       return true;
+    //     }else{
+    //       return false;
+    //     }
+    //   } 
+    //   return false;
+    // },
     getSearchDef() {
       return {
        // offset: 12,
@@ -480,13 +488,13 @@ for(var i = 0;i< 100; i++){
     handleAllSelect(selection) {
       console.log('handleAllSelect', selection)
     },
-
     handleCurrentChange(val){
       console.log(`当前页: ${val}`);
     },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          console.log(this.ruleForm);
           alert('submit!');
         } else {
           console.log('error submit!!');
@@ -592,6 +600,12 @@ for(var i = 0;i< 100; i++){
         tmp[k] = data[k];
       }
       this.ruleForm = tmp;
+      let iparr = [];
+      let serverlist = tmp.select_serverlist;
+      for(let i in serverlist){
+        iparr.push(serverlist[i].ip);
+      }
+      this.ipOptionsChecked = iparr;
     }
   }
 }
