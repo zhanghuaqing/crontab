@@ -85,7 +85,7 @@ class Mif_View{
             $view_path = $view_base . 'modules/' . $module . '/views/'.strtolower(Mif_Starup::parseHump($controller)) . '/';
         }
         if (!is_dir($view_path)){
-            throw new Exception('视图目录' . $view_path . '不存在');
+            //throw new Exception('视图目录' . $view_path . '不存在');
         }
         $this->_script_path = $view_path;
     }

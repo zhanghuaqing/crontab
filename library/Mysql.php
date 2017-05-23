@@ -58,7 +58,7 @@ class Mysql {
 			$tdb = $mysql_conf ['slave'];
 			$master_or_slave = 'slave';
 		}
-		if (empty ( self::$instance [$db_conf] [$master_or_slave] ) || ! @mysql_ping ( self::$instance [$db_conf] [$master_flag] )) {
+		if (empty ( self::$instance [$db_conf] [$master_or_slave] )) {
 			$dsn = "mysql:host=" . $tdb ['host'] . ";port=" . $tdb ['port'] . ";dbname=" . $tdb ['dbname'];
 			self::$instance [$db_conf] [$master_or_slave] = new PDO ( $dsn, $tdb ['username'], $tdb ['password'] );
 		}

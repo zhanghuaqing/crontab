@@ -11,17 +11,31 @@ abstract class Mif_Controller{
     public function __construct(){
         $script_path = '';//默认视图目录
         $this->_view = new Mif_View($script_path);
+        $this->init();
     }
     public function __destruct(){
         if ($this->_autorender){
             $this->display();
         }
     }
-    
+    /**
+     * 子类重写
+     */
+    protected function init(){
+        return true;
+    }
     protected function assign($name, $value){
         return $this->_view->assign($name, $value);
     }
-    
+
+    protected function assignArr($arr){
+        if (is_array($arr)){
+            foreach ($arr as $name => $value){
+                $this->_view->assign($name, $value);
+            }
+        }
+        return true;
+    }
     protected function render(){
         return $this->_view->render();
     }

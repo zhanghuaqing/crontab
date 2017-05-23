@@ -195,20 +195,11 @@ class JobManageModel {
             Debug::setErrorMessage("参数错误");
             return false;
         }
-        $data = $update;
-        if (isset($data['status'])) {
-            unset($data['status']);
+        $data = $this->_checkUpdateData($update);
+        if ($data === false){
+            return false;
         }
         $data ['id'] = $id;
-        $select_serverlist = array();
-        if (isset($data ['select_serverlist']) && !empty($data ['select_serverlist'])){
-            $server_list = explode(',',$data ['select_serverlist']);
-            $select_serverlist = $server_list;
-        }
-        if (isset($data ['select_serverlist']))$data ['exec_server'] = $this->getExecipBySelectiplist($select_serverlist, $data [self::SERVER_NUM_FIELD]);
-        if (isset($data [self::SERVER_NUM_FIELD])) {
-        	unset($data [self::SERVER_NUM_FIELD]);
-        }
         return $this->_updateJobInfo($data);
     }
     /**
@@ -438,9 +429,10 @@ class JobManageModel {
             return false;
         }
         $data_new ['cron_cmd'] = $data ['cron_cmd'];
-        if (isset($data ['max_exectime']) && (!is_numeric($data ['max_exectime']) || $data ['max_exectime']<0)){
+        $data ['max_exectime'] = intval($data ['max_exectime']);
+        if (isset($data ['max_exectime']) && $data ['max_exectime']<0){
             Debug::setErrorMessage('cron脚本执行最长时间格式错误！');
-            return false;
+            //return false;
         }
         if (isset($data ['max_exectime']))$data_new ['max_exectime'] = $data ['max_exectime'];
         $select_serverlist = array();
@@ -459,13 +451,59 @@ class JobManageModel {
         return $data_new;
     }
     /**
+     * 判断更新的数据有效性(不判断状态),返回处理后的数据
+     * @param unknown $data
+     */
+    private function _checkUpdateData($data){
+        $data_new = array();
+        if (isset($data ['name'])){
+            if (empty($data ['name'])){
+                Debug::setErrorMessage('任务名为空！');
+                return false;
+            }
+            $data_new ['name'] = $data ['name'];
+        }
+        if (isset($data ['cron_time'])){
+            if (! PublicModel::checkCronTime($data ['cron_time'])){
+                Debug::setErrorMessage('cron执行时间设置格式有误！');
+                return false;
+            }
+            $data_new ['cron_time'] = $data ['cron_time'];
+        }
+        if (isset($data ['cron_cmd'])){
+            if (! PublicModel::checkCronCmd($data ['cron_cmd'])){
+                Debug::setErrorMessage('cron执行命令格式有误！');
+                return false;
+            }
+            $data_new ['cron_cmd'] = $data ['cron_cmd'];
+        }
+        if (isset($data ['max_exectime'])){
+            if (!is_numeric($data ['max_exectime']) || $data ['max_exectime']<0){
+                Debug::setErrorMessage('cron脚本执行最长时间格式错误！');
+                return false;
+            }
+            $data_new ['max_exectime'] = $data ['max_exectime'];
+        }
+        $select_serverlist = array();
+        if (isset($data ['select_serverlist']) && !empty($data ['select_serverlist'])){
+            $server_list = explode(',',$data ['select_serverlist']);
+            $select_serverlist = $server_list;
+        }
+        if (isset($data ['select_serverlist'])){
+            $data_new ['select_serverlist'] = $data ['select_serverlist'];
+            $data_new ['exec_server'] = $this->_getExecServerBySelectServerlist($select_serverlist, $data [self::SERVER_NUM_FIELD]);
+        }
+        
+        return $data_new;
+    }
+    /**
      * 根据可执行的服务器列表和执行任务的机器数量，来确定初始的exec_server
      * @param unknown $select_serverlist
      * @param unknown $server_num
      * @return string
      */
     private function _getExecServerBySelectServerlist($select_serverlist, $server_num){
-        $exec_server = '';
+        $exec_server = 0;
         if ($select_serverlist){
             //处理exec_server,需要判断是不是在每台机器上执行
             if ($server_num == self::EXEC_ONESERVER || count($select_serverlist) ==1){

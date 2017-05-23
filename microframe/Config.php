@@ -31,7 +31,7 @@
  	'php_bin' => '/usr/local/php-5.6.27/bin/php',
     'log_path' => '/var/log/', //日志路径
     'rm_log_time' => 180 * 24 * 3600, //日志删除时间长度
-    'joblist_file_utime_gap' => 1800, //任务文件更新时间最长间隔
+    'joblist_file_utime_gap' => 2400, //任务文件更新时间最长间隔
     'mail_conf' => array(
  		'from_mailer' => 'zhq11121065@163.com', //仅限于163,QQ邮箱
  		'from_mailername' => 'huaqing',			//发送者昵称
