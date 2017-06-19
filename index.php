@@ -3,6 +3,7 @@
  * 入口文件
  * 
  */
+//test
 //当前目录
 define('APP_PATH', dirname(__FILE__) . '/');
 //设置加载文件路径
