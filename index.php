@@ -4,6 +4,7 @@
  * 
  */
 //当前目录
+//test
 define('APP_PATH', dirname(__FILE__) . '/');
 //设置加载文件路径
 set_include_path(APP_PATH);
